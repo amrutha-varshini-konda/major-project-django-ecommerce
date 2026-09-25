@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pay with Razorpay - E-Commerce Store</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px 40px; color: #333; text-align: center; }
+        .payment-card { max-width: 450px; margin: 60px auto; padding: 30px; border: 1px solid #e0e0e0; border-radius: 8px; background: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .payment-card h2 { color: #2c3e50; margin-top: 0; }
+        .amount { font-size: 24px; font-weight: bold; color: #28a745; margin: 20px 0; }
+        .btn-pay { background-color: #3399cc; color: white; border: none; padding: 12px 25px; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="payment-card">
+        <h2>Complete Your Payment</h2>
+        <p>Order ID: <strong>#{{ order.id }}</strong></p>
+        <div class="amount">Total: ₹{{ order.get_total_cost }}</div>
+
+        <!-- Razorpay Checkout Form -->
+        <form action="{% url 'orders:payment_callback' %}" method="POST">
+            <script
+                src="https://checkout.razorpay.com/v1/checkout.js"
+                data-key="{{ razorpay_merchant_key }}"
+                data-amount="{{ razorpay_amount }}"
+                data-currency="{{ currency }}"
+                data-order_id="{{ razorpay_order_id }}"
+                data-buttontext="Pay Now"
+                data-name="E-Commerce Store"
+                data-description="Order Payment"
+                data-prefill.name="{{ order.first_name }} {{ order.last_name }}"
+                data-prefill.email="{{ order.email }}"
+                data-theme.color="#3399cc"
+            ></script>
+            <input type="hidden" custom="Hidden Element" name="hidden">
+        </form>
+    </div>
+
+</body>
+</html>

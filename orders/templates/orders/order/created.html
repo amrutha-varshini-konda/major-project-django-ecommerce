@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Confirmation - E-Commerce Store</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px 40px; color: #333; text-align: center; }
+        .confirmation-box { max-width: 500px; margin: 60px auto; padding: 40px; border: 1px solid #e0e0e0; border-radius: 8px; background: #f8f9fa; }
+        .confirmation-box h1 { color: #28a745; margin-top: 0; }
+        .order-id { font-size: 20px; font-weight: bold; color: #2c3e50; margin: 20px 0; }
+        .btn-home { display: inline-block; background-color: #007bff; color: white; text-decoration: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="confirmation-box">
+        <h1>Thank You!</h1>
+        <p>Your order has been successfully placed.</p>
+        <div class="order-id">Order ID: #{{ order.id }}</div>
+        <p>We have received your request and will process it shortly.</p>
+        <a href="{% url 'store:product_list' %}" class="btn-home">Continue Shopping</a>
+    </div>
+
+</body>
+</html>

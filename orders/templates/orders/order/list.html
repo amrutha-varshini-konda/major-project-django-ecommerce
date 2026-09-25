@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders - E-Commerce Store</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px 40px; color: #333; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 2px solid #eaeaea; margin-bottom: 30px; }
+        .top-nav h1 { margin: 0; font-size: 24px; }
+        .top-nav h1 a { text-decoration: none; color: #2c3e50; }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .cart-link { text-decoration: none; font-weight: bold; color: #28a745; }
+        .btn-logout { background: none; border: none; color: #dc3545; cursor: pointer; text-decoration: underline; font-size: 14px; }
+        
+        .order-card { border: 1px solid #e0e0e0; border-radius: 8px; margin-bottom: 25px; padding: 20px; background: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .order-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 15px; }
+        .order-id { font-weight: bold; font-size: 18px; color: #2c3e50; }
+        .order-date { color: #777; font-size: 14px; }
+        .status-badge { background-color: #28a745; color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        
+        .item-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .item-table th, .item-table td { padding: 8px 12px; text-align: left; font-size: 14px; }
+        .item-table th { background: #f8f9fa; color: #555; }
+        .order-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; pt: 10px; border-top: 1px solid #eee; font-weight: bold; }
+        .empty-orders { text-align: center; padding: 50px 0; color: #6c757d; }
+        .btn-shop { text-decoration: none; background-color: #007bff; color: white; padding: 8px 16px; border-radius: 4px; display: inline-block; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Header -->
+    <div class="top-nav">
+        <h1><a href="{% url 'store:product_list' %}">E-Commerce Store</a></h1>
+        
+        <div class="nav-right">
+            <a href="{% url 'orders:order_list' %}" style="text-decoration: none; font-weight: bold; color: #007bff;">📦 My Orders</a>
+            <a href="{% url 'store:cart_detail' %}" class="cart-link">🛒 Cart</a>
+
+            {% if user.is_authenticated %}
+                <span>Welcome, <strong>{{ user.username }}</strong>!</span>
+                <form action="{% url 'logout' %}" method="post" style="display: inline; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout">Log Out</button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <h2>My Order History</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div>
+                        <span class="order-id">Order #{{ order.id }}</span>
+                        <span class="order-date"> • {{ order.created|date:"M d, Y - H:i" }}</span>
+                    </div>
+                    <span class="status-badge">{% if order.paid %}Paid{% else %}Pending{% endif %}</span>
+                </div>
+
+                <table class="item-table">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                            <tr>
+                                <td>{{ item.product.name }}</td>
+                                <td>{{ item.quantity }}</td>
+                                <td>${{ item.price }}</td>
+                                <td>${{ item.get_cost }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="order-footer">
+                    <span>Shipping Address: {{ order.address }}, {{ order.city }} ({{ order.postal_code }})</span>
+                    <span style="color: #28a745; font-size: 16px;">Total Paid: ${{ order.get_total_cost }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-orders">
+            <p style="font-size: 18px;">You haven't placed any orders yet.</p>
+            <a href="{% url 'store:product_list' %}" class="btn-shop">Start Shopping</a>
+        </div>
+    {% endif %}
+
+</body>
+</html>
