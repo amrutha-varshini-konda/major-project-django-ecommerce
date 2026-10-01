@@ -1,6 +1,4 @@
-asgiref==3.8.1
-cloudinary==1.46.2
-dj-cloudinary-storage==0.3.0
-Django==5.1
-sqlparse==0.5.1
-whitenoise==6.7.0
+Django
+gunicorn
+Pillow
+mysqlclient
